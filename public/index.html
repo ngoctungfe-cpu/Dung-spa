@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#D81B60" />
+  <meta name="description" content="Đặt lịch làm đẹp tại Dung Spa – trị mụn, trị nám, trẻ hóa da. 2 cơ sở tại Đà Nẵng." />
+  <title>Dung Spa – Đặt lịch làm đẹp</title>
+  <link rel="icon" href="img/logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <img src="img/logo.jpg" alt="Logo Dung Spa" width="40" height="40" />
+      <div class="brand"><span id="brand">Dung Spa</span><small>Chăm sóc tức tâm · Nâng tầm nhan sắc</small></div>
+      <button class="btn sm" id="open-call" type="button"><svg class="ic" data-i="phone"></svg>Gọi</button>
+    </div>
+  </header>
+
+  <!-- KHÁCH ĐẶT LỊCH -->
+  <main id="view-booking" class="wrap">
+    <section class="hero">
+      <h1>Đẹp hơn mỗi ngày,<br />tự tin tỏa sáng</h1>
+      <p>Chọn cơ sở, dịch vụ và giờ hẹn. Mất chưa tới 1 phút.</p>
+      <div class="calls" id="hero-calls"></div>
+    </section>
+
+    <form id="booking-form" novalidate autocomplete="on">
+      <section class="step">
+        <h2>1. Chọn cơ sở</h2>
+        <p class="hint">Mỗi cơ sở có một chuyên viên phụ trách</p>
+        <div class="opts" id="branches"></div>
+      </section>
+
+      <section class="step">
+        <h2>2. Chọn dịch vụ</h2>
+        <p class="hint">Chạm vào dịch vụ bạn muốn</p>
+        <div class="chips" id="services"></div>
+      </section>
+
+      <section class="step">
+        <h2>3. Chọn ngày giờ</h2>
+        <p class="hint">Mỗi cơ sở nhận tối đa 2 khách cùng lúc</p>
+        <span class="lbl" style="margin-top:0">Ngày</span>
+        <div class="days" id="days" role="group" aria-label="Chọn ngày"></div>
+        <span class="lbl">Giờ</span>
+        <div class="slots" id="slots" role="group" aria-label="Chọn giờ"></div>
+        <label class="lbl" for="time-other">Hoặc nhập giờ khác</label>
+        <input id="time-other" type="time" />
+        <div class="status" id="avail" role="status"></div>
+      </section>
+
+      <section class="step">
+        <h2>4. Thông tin của bạn</h2>
+        <p class="hint">Dùng để xác nhận lịch hẹn</p>
+        <div class="field"><label for="f-name">Họ và tên <i>*</i></label><input id="f-name" name="name" type="text" autocomplete="name" placeholder="Nguyễn Minh Anh" /></div>
+        <div class="field"><label for="f-phone">Số điện thoại <i>*</i></label><input id="f-phone" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="0901 234 567" /></div>
+        <div class="field"><label for="f-email">Gmail <i>*</i></label><input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="minhanh@gmail.com" /></div>
+        <div class="field"><label for="f-channel">Nhận xác nhận qua</label>
+          <select id="f-channel"><option value="both">Gmail và SĐT (SMS/Zalo)</option><option value="gmail">Chỉ Gmail</option><option value="phone">Chỉ SĐT (SMS/Zalo)</option></select></div>
+        <div class="field"><label for="f-note">Ghi chú (không bắt buộc)</label><input id="f-note" type="text" placeholder="Da nhạy cảm, thích lực massage nhẹ…" /></div>
+        <p class="err" id="form-error" role="alert" hidden></p>
+      </section>
+    </form>
+
+    <section class="poster"><img src="img/banner.jpg" alt="Dịch vụ của Dung Spa: chuyên mụn, nám, makeup, phun xăm thẩm mỹ, đào tạo học viên" loading="lazy" width="360" height="540" /></section>
+    <footer class="foot"><span id="foot-addr"></span><br /><a href="#quan-ly">Dành cho chủ tiệm</a></footer>
+  </main>
+
+  <!-- CHỦ TIỆM -->
+  <main id="view-admin" class="wrap" hidden>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:8px">
+      <a class="back" href="#"><svg class="ic" data-i="back"></svg>Trang đặt lịch</a>
+      <button class="btn ghost sm" id="open-settings" type="button">Sửa thông tin</button>
+    </div>
+    <h1 style="font-size:24px;margin:8px 0 12px;color:var(--pink-dk)">Lịch hẹn 2 cơ sở</h1>
+    <div class="filters" id="filters"></div>
+    <div id="admin-list"></div>
+    <h2 style="font-size:18px;margin:20px 0 4px;color:var(--pink-dk)">Thông báo gần đây</h2>
+    <div class="card" id="admin-log"></div>
+  </main>
+
+  <div class="bar" id="bar">
+    <div class="wrap">
+      <div class="sum"><b id="sum-1">Chọn cơ sở và dịch vụ</b><span id="sum-2"></span></div>
+      <button class="btn" type="submit" form="booking-form" id="submit">Đặt lịch</button>
+    </div>
+  </div>
+
+  <div class="veil" id="sheet" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet-body"></div></div>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
