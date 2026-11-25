@@ -68,11 +68,22 @@
     </form>
 
     <section class="poster"><img src="img/banner.jpg" alt="Dịch vụ của Dung Spa: chuyên mụn, nám, makeup, phun xăm thẩm mỹ, đào tạo học viên" loading="lazy" width="360" height="540" /></section>
-    <footer class="foot"><span id="foot-addr"></span><br /><a href="#quan-ly">Dành cho chủ tiệm</a></footer>
+    <footer class="foot"><span id="foot-addr"></span></footer>
   </main>
 
   <!-- CHỦ TIỆM -->
   <main id="view-admin" class="wrap" hidden>
+    <section id="admin-gate" class="step" style="margin-top:16px">
+      <a class="back" href="#"><svg class="ic" data-i="back"></svg>Trang đặt lịch</a>
+      <h2 style="margin-top:8px">Dành cho chủ tiệm</h2>
+      <p class="hint">Nhập mã PIN để xem lịch hẹn</p>
+      <form id="pin-form">
+        <div class="field"><label for="pin">Mã PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" /></div>
+        <p class="err" id="pin-err" role="alert" hidden></p>
+        <button class="btn block" type="submit">Vào quản lý</button>
+      </form>
+    </section>
+    <div id="admin-body" hidden>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:8px">
       <a class="back" href="#"><svg class="ic" data-i="back"></svg>Trang đặt lịch</a>
       <button class="btn ghost sm" id="open-settings" type="button">Sửa thông tin</button>
@@ -82,6 +93,7 @@
     <div id="admin-list"></div>
     <h2 style="font-size:18px;margin:20px 0 4px;color:var(--pink-dk)">Thông báo gần đây</h2>
     <div class="card" id="admin-log"></div>
+  </div>
   </main>
 
   <div class="bar" id="bar">
@@ -93,6 +105,7 @@
 
   <div class="veil" id="sheet" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet-body"></div></div>
   <div class="toast" id="toast" role="status" hidden></div>
+  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

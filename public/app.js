@@ -46,6 +46,8 @@
   var today = iso(new Date());
   var sel = { branch: S.branches[0].id, service: 0, date: today, time: '' };
   var filter = 'all';
+  var PINKEY = 'dung_admin_pin', adminOk = false, adminPin = '';
+  try { adminPin = sessionStorage.getItem(PINKEY) || ''; } catch (e) {}
 
   function branch(id) { return S.branches.filter(function (b) { return b.id === id; })[0] || S.branches[0]; }
   function mins(t) { if (!t || t.indexOf(':') < 0) return -1; var p = t.split(':'); return +p[0] * 60 + +p[1]; }
@@ -61,15 +63,18 @@
 
   /* ---------- Server (tùy chọn) ---------- */
   function api(path, opt) {
-    return fetch(path, opt).then(function (r) {
+    var apiBase = String(window.DUNG_SPA_API_BASE || '').replace(/\/+$/, '');
+    return fetch(apiBase + path, opt).then(function (r) {
       var ct = r.headers.get('content-type') || '';
       if (ct.indexOf('json') < 0) return { offline: true };
       return r.json().then(function (j) { return { status: r.status, ok: r.ok, data: j }; });
     }).catch(function () { return { offline: true }; });
   }
   function sync() {
-    return api('/api/state').then(function (r) {
+    return api('/api/state', { headers: adminPin ? { 'x-admin-pin': adminPin } : {} }).then(function (r) {
       if (r.offline || !r.ok || !r.data || !Array.isArray(r.data.bookings)) return;
+      adminOk = !!r.data.admin;
+      if (adminPin && !adminOk) { adminPin = ''; try { sessionStorage.removeItem(PINKEY); } catch (e) {} }
       S.bookings = r.data.bookings;
       if (Array.isArray(r.data.notifications)) S.notifications = r.data.notifications;
       save(); renderAll();
@@ -127,6 +132,8 @@
 
   /* ---------- Render: chủ tiệm ---------- */
   function renderAdmin() {
+    $('admin-gate').hidden = adminOk; $('admin-body').hidden = !adminOk;
+    if (!adminOk) return;
     var act = S.bookings.filter(function (b) { return b.status !== 'cancelled'; });
     var cnt = function (id) { return act.filter(function (b) { return id === 'all' || b.branchId === id; }).length; };
     $('filters').innerHTML = [{ id: 'all', t: 'Tất cả' }].concat(S.branches.map(function (b) { return { id: b.id, t: b.branchLabel }; })).map(function (f) {
@@ -212,7 +219,7 @@
     else if (t.dataset.a) {
       var k = S.bookings.filter(function (x) { return x.id === t.dataset.id; })[0]; if (!k) return;
       k.status = t.dataset.a; save();
-      api('/api/bookings/' + encodeURIComponent(k.id), { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: k.status }) });
+      api('/api/bookings/' + encodeURIComponent(k.id), { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-pin': adminPin }, body: JSON.stringify({ status: k.status }) });
       toast(k.status === 'completed' ? 'Đã đánh dấu xong #' + k.id : 'Đã hủy #' + k.id + ', giờ này được mở lại');
     }
     renderAll();
@@ -222,6 +229,14 @@
   $('open-call').addEventListener('click', callSheet);
   $('open-settings').addEventListener('click', settingsSheet);
   $('booking-form').addEventListener('submit', submit);
+  $('pin-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var err = $('pin-err'); err.hidden = true; adminPin = $('pin').value.trim();
+    sync().then(function () {
+      if (adminOk) { try { sessionStorage.setItem(PINKEY, adminPin); } catch (x) {} $('pin').value = ''; return; }
+      adminPin = ''; err.textContent = 'Sai mã PIN, hoặc server chưa chạy. Trang quản lý cần chạy cùng server.'; err.hidden = false;
+    });
+  });
   $('time-other').addEventListener('input', function (e) { sel.time = e.target.value; renderSlots(); renderBar(); });
   document.addEventListener('submit', function (e) {
     if (e.target.id !== 'settings-form') return;
